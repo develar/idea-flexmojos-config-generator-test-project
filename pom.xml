@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.exampleI</groupId>
+  <artifactId>aggregator</artifactId>
+  <version>1.0</version>
+  <packaging>pom</packaging>
+
+  <scm>
+    <connection>scm:svn:http://svn.thetuscorp.com</connection>
+    <developerConnection>scm:svn:http://svn.thetuscorp.com</developerConnection>
+    <tag>HEAD</tag>
+    <url>http://viewvc.thetuscorp.com/viewvc/thetus</url>
+  </scm>
+
+  <properties>
+    <fdk.version>4.5.1.21328</fdk.version>
+    <flex.sdk.version>4.5.1.21328</flex.sdk.version>
+    <flexMojos.version>4.0-RC2</flexMojos.version>
+  </properties>
+
+  <modules>
+    <module>app</module>
+    <module>libA</module>
+    <module>libB</module>
+  </modules>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.adobe.flex.framework</groupId>
+      <artifactId>playerglobal</artifactId>
+      <type>swc</type>
+      <classifier>10.2</classifier>
+      <version>${fdk.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <sourceDirectory>src/main/flex</sourceDirectory>
+    <testSourceDirectory>src/test/flex</testSourceDirectory>
+
+    <plugins>
+      <plugin>
+        <groupId>org.sonatype.flexmojos</groupId>
+        <artifactId>flexmojos-maven-plugin</artifactId>
+        <version>${flexMojos.version}</version>
+        <extensions>true</extensions>
+        <dependencies>
+          <dependency>
+            <groupId>com.adobe.flex</groupId>
+            <artifactId>compiler</artifactId>
+            <version>${fdk.version}</version>
+            <type>pom</type>
+          </dependency>
+        </dependencies>
+
+        <configuration>
+          <defines>
+            <property>
+              <!-- this needs to have quotes around it. -->
+              <name>VERSION::buildNumber</name>
+              <value>"${buildNumber}"</value>
+            </property>
+            <property>
+              <name>BUILD::time</name>
+              <value>'${maven.build.timestamp}'</value>
+            </property>
+          </defines>
+          <compilerWarnings>
+            <warn-no-constructor>false</warn-no-constructor>
+          </compilerWarnings>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>buildnumber-maven-plugin</artifactId>
+        <version>1.2</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>create</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
+          <revisionOnScmFailure>32</revisionOnScmFailure>
+          <doCheck>false</doCheck>
+          <doUpdate>false</doUpdate>
+          <useLastCommittedRevision>false</useLastCommittedRevision>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
